@@ -1,12 +1,12 @@
 package com.example.transaction.controller;
 
+import com.example.transaction.request.TransferRequest;
 import com.example.transaction.service.TokenValidationService;
 import com.example.transaction.service.TransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/v1/transactions")
@@ -15,23 +15,22 @@ public class TransactionController {
     private final TransactionService transactionService;
     private final TokenValidationService tokenValidationService;
 
+
     public TransactionController(TransactionService transactionService, TokenValidationService tokenValidationService) {
         this.transactionService = transactionService;
         this.tokenValidationService=tokenValidationService;
     }
 
+    @Transactional
     @PostMapping("/transfer")
-    public ResponseEntity<String> transferMoney(@RequestHeader("Authorization") String token, @RequestParam Long sourceAccountId, @RequestParam Long targetAccountId, @RequestParam BigDecimal amount) {
+    public ResponseEntity<String> transferMoney(@RequestBody TransferRequest transferRequest, @RequestHeader("Authorization") String token) {
         if (tokenValidationService.validateToken(token)) {
-            // Proceed with the transfer logic
-            if(amount <= 0){
-
-            }
-            transactionService.transferMoney(sourceAccountId, targetAccountId, amount);
+           transactionService.transferMoney(transferRequest.getFromAccountId(), transferRequest.getToAccountId(), transferRequest.getAmount(), token);
             return ResponseEntity.status(HttpStatus.OK).body("successfully transferred");
-        } else {
+        }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Token");
         }
+
     }
 
 

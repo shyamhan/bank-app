@@ -8,10 +8,16 @@ spring:
         service-url:
           defaultZone: http://localhost:8761/eureka/
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
+    url: jdbc:mysql://localhost:3306/bankapp?useSSL=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 25
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
 
   jpa:
     hibernate:
@@ -30,22 +36,16 @@ jwt:
 
 # Tracing and Metrics Configuration
 management:
-#  tracing:
-#    sampling:
-#      probability: 1.0
-#
-#  otlp:
-#    tracing:
-#      endpoint: http://localhost:4318/v1/traces
-#    metrics:
-#      export:
-#        enabled: false
-
-  endpoints:
-    web:
-      exposure:
-        include: prometheus
-
+  otlp:
+    metrics:
+      export:
+        enabled: false
+  tracing:
+    exporter:
+      zipkin:
+        endpoint: http://localhost:9411/api/v2/spans
+    sampling:
+      probability: 1.0
   metrics:
     distribution:
       percentiles-histogram:

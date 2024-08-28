@@ -1,6 +1,17 @@
 spring:
   application:
-    name: transaction-service
+    name: NOTIFICATION-SERVICE
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${email_username}
+    password: ${email_password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   cloud:
     discovery:
       client:
@@ -8,16 +19,10 @@ spring:
           defaultZone: http://localhost:8761/eureka/
 
   datasource:
-    url: jdbc:mysql://localhost:3306/bankapp?useSSL=false&serverTimezone=UTC
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
-    hikari:
-      maximum-pool-size: 50
-      minimum-idle: 25
-      idle-timeout: 30000
-      max-lifetime: 1800000
-      connection-timeout: 30000
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
 
   jpa:
     hibernate:
@@ -53,4 +58,4 @@ logging:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
 server:
-  port: 9090
+  port: 9095

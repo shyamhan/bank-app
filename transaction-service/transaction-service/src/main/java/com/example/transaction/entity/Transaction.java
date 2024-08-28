@@ -4,9 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,6 +13,8 @@ import java.time.LocalDateTime;
 @Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,4 +24,11 @@ public class Transaction {
     private Long targetAccountId;
     private BigDecimal amount;
     private LocalDateTime timestamp;
+
+    public Transaction(Long fromAccountId, Long toAccountId, BigDecimal amount, LocalDateTime now) {
+        this.sourceAccountId=fromAccountId;
+        this.targetAccountId=toAccountId;
+        this.amount=amount;
+        this.timestamp=now;
+    }
 }
